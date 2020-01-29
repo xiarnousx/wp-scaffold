@@ -22,10 +22,15 @@ get_header();
 <?php while ( have_posts() ) : ?>
 	<?php the_post(); ?>
 	<?php $event_link = get_the_permalink(); ?>
+	<?php
+	$event_date = new DateTime( get_field( 'event_date' ) );
+	$month      = $event_date->format( 'M' );
+	$day        = $event_date->format( 'd' );
+	?>
 <div class="event-summary">
 	<a class="event-summary__date t-center" href="<?php echo esc_url( $event_link ); ?>">
-		<span class="event-summary__month">Mar</span>
-		<span class="event-summary__day">25</span>  
+		<span class="event-summary__month"><?php echo esc_html( $month ); ?></span>
+		<span class="event-summary__day"><?php echo esc_html( $day ); ?></span>  
 	</a>
 	<div class="event-summary__content">
 		<h5 class="event-summary__title headline headline--tiny"><a href="<?php echo esc_url( $event_link ); ?>"><?php echo wp_kses_post( get_the_title() ); ?></a></h5>
@@ -34,7 +39,10 @@ get_header();
 </div>
 <?php endwhile; ?>
 <?php echo wp_kses_post( paginate_links() ); ?>
+<hr class="section-break"/>
+<p> Looking for a recap of past events? <a href="<?php echo esc_url( site_url( '/past-events' ) ); ?>" >Check out our pas events!!!</a>
 </div>
+
 
 
 

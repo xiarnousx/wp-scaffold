@@ -31,25 +31,35 @@ function theme_fictional_university_feature() {
 
 add_action( 'after_setup_theme', 'theme_fictional_university_feature' );
 
-/**
- * Then fu_esc_html escapes html to custom allowed html elements
- *
- * @return array
- */
-function fu_allowed_html() {
-	$allowed_html = array(
-		'a'      => array(
-			'href'  => array(),
-			'title' => array(),
-		),
-		'br'     => array(),
-		'em'     => array(),
-		'strong' => array(),
-	);
 
-	return $allowed_html;
+/**
+ * Adjusts the event custom post type archive screen.
+ *
+ * @param WP_Query $query WordPress query before execution.
+ * @return void
+ */
+function fu_adjust_queries( $query ) {
+	if ( is_admin() || ! is_post_type_archive( 'event' ) || ! $query->is_main_query() ) {
+		return;
+	}
+
+	$today = gmdate( 'Y-m-d H:i:s' );
+	$query->set( 'meta_key', 'event_date' );
+	$query->set( 'orderby', 'meta_value' );
+	$query->set( 'order', 'ASC' );
+	$query->set(
+		'meta_query',
+		array(
+			array(
+				'key'     => 'event_date',
+				'compare' => '>=',
+				'value'   => $today,
+			),
+		)
+	);
 }
 
+add_action( 'pre_get_posts', 'fu_adjust_queries' );
 
 
 
